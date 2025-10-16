@@ -22,15 +22,11 @@ jobs:
         with:
           node-version: 20
       - run: npm ci || npm i
-        working-directory: client
       - run: npm run build
-        working-directory: client
-      # Add the CNAME into the artifact so Pages serves it
-      - run: echo "davincink.se" > client/dist/CNAME
+      - run: echo "davincink.se" > dist/CNAME
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: client/dist
-
+          path: dist
   deploy:
     needs: build
     runs-on: ubuntu-latest
