@@ -3,13 +3,16 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+
 permissions:
   contents: read
   pages: write
   id-token: write
+
 concurrency:
   group: "pages"
   cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,10 +22,15 @@ jobs:
         with:
           node-version: 20
       - run: npm ci || npm i
+        working-directory: client
       - run: npm run build
+        working-directory: client
+      # Add the CNAME into the artifact so Pages serves it
+      - run: echo "davincink.se" > client/dist/CNAME
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: client/dist
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -32,3 +40,4 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
